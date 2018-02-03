@@ -98,20 +98,37 @@ my_dataset.fillna(value=0, inplace = True)
 #                          'proportion_to_poi']
 
 #features_list = best_correlations_list
+
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
+
+###Lasso regression
+#from sklearn.linear_model import Lasso
+###features = selector.fit_transform(features, labels)
+#regression = Lasso()
+#regression.fit(features, labels)
+#coeficients = zip(features_list[1:],regression.coef_ != 0)
+#best_coefs = sorted(coeficients, key = lambda x: x[1])
+##print best_coefs
+#best_lasso_list = list(map(lambda x: x[0], best_coefs))
+#best_lasso_list = ["poi"] + [e for e in best_lasso_list if e not in ('proportion_to_poi', 'from_poi_to_this_person', 'proportion_from_poi')]
+#print("Best Lasso Regression features:")
+#print best_lasso_list
+
+#features_list = best_lasso_list
+
 
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_classif
 
-k=5
+k=8
 selector = SelectKBest(f_classif, k)
 selector.fit_transform(features, labels)
-print("SelectKBest feature scores:")
+#print("SelectKBest feature scores:")
 scores = zip(features_list[1:],selector.scores_)
 #scores = zip(features_list[1:],-np.log10(selector.pvalues_))
 sorted_scores = sorted(scores, key = lambda x: x[1], reverse=True)
-print sorted_scores
+#print sorted_scores
 best_kbest_list = ["poi"] + list(map(lambda x: x[0], sorted_scores))[0:k]
 print("Best SelectKBest features:")
 print best_kbest_list
@@ -123,8 +140,8 @@ data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
 #Feature Scaling
-scaler = MinMaxScaler()
-features = scaler.fit_transform(features)
+#scaler = MinMaxScaler()
+#features = scaler.fit_transform(features)
 
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
@@ -167,28 +184,25 @@ features = scaler.fit_transform(features)
 #Naive Bayers
 from sklearn.naive_bayes import GaussianNB
 clf_n = GaussianNB()
-features_train, features_test, labels_train, labels_test = \
-train_test_split(features, labels, test_size=0.3, random_state=42)
-clf_n.fit(features_train, labels_train)
-pred = clf_n.predict(features_test)
+#features_train, features_test, labels_train, labels_test = \
+#train_test_split(features, labels, test_size=0.3, random_state=42)
+#clf_n.fit(features_train, labels_train)
+#pred = clf_n.predict(features_test)
 
-acc = accuracy_score(labels_test, pred)
-rec = recall_score(labels_test, pred)
-prec = precision_score(labels_test, pred)
+#acc = accuracy_score(labels_test, pred)
+#rec = recall_score(labels_test, pred)
+#prec = precision_score(labels_test, pred)
 
-print "Naive bayes model"
-print "accuracy:", acc
-print "precision:", prec
-print "recall:", rec
+#print "Naive bayes model"
+#print "accuracy:", acc
+#print "precision:", prec
+#print "recall:", rec
 
 #Support Vector Machines
-#from sklearn.cross_validation import train_test_split
-#features_train, features_test, labels_train, labels_test = \
-#    train_test_split(features, labels, test_size=0.3, random_state=42)
-
 #from sklearn import svm
-#clf_svm = svm.SVC(kernel='rbf', C=10, gamma=1)
-
+#clf_svm = svm.SVC(kernel='linear', C=0.001, gamma=0.001)
+#features_train, features_test, labels_train, labels_test = \
+#train_test_split(features, labels, test_size=0.3, random_state=42)
 #clf_svm.fit(features_train, labels_train)
 #pred = clf_svm.predict(features_test)
 
